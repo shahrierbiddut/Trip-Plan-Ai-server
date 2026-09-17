@@ -7,7 +7,7 @@ import {
   updateDestination,
   deleteDestination,
   getPlaceBySlug,
-} from "../controllers/destinations.controller";
+} from '../controllers/destinations.controller.js';
 
 export const destinationsRouter = (db: Db) => {
   const router = Router();

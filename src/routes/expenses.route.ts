@@ -4,7 +4,7 @@ import {
   getExpensesByTrip,
   createExpense,
   deleteExpense,
-} from "../controllers/expenses.controller";
+} from '../controllers/expenses.controller.js';
 
 export const expensesRouter = (db: Db) => {
   const router = Router();

@@ -1,27 +1,27 @@
 import "dotenv/config";
-import { aiRouter } from "./routes/ai.route";
+import { aiRouter } from './routes/ai.route.js';
 import express, { NextFunction, Request, Response } from "express";
 import { MongoClient, Db } from "mongodb";
 import cors from "cors";
-import { getAuth } from "./config/auth";
-import { destinationsRouter } from "./routes/destinations.route";
-import { reviewsRouter } from "./routes/reviews.route";
-import { tripsRouter } from "./routes/trips.route";
-import { categoriesRouter } from "./routes/travel-categories.route";
-import { bookmarksRouter } from "./routes/bookmarks.route";
-import { usersRouter } from "./routes/users.route";
-import { statsRouter } from "./routes/stats.route";
-import { expensesRouter } from "./routes/expenses.route";
-import { storiesRouter } from "./routes/stories.route";
-import { settingsRouter } from "./routes/settings.route";
-import { hotelsRouter } from "./routes/hotels.route";
-import { foodRouter } from "./routes/food.route";
-import { notificationsRouter } from "./routes/notifications.route";
-import { supportRouter } from "./routes/support.route";
-import { userRouter } from "./routes/user.route";
-import { tourBookingRouter } from "./routes/tour-booking.route";
-import { getFeaturedReviews } from "./controllers/reviews.controller";
-import { tourPackagesRouter } from "./routes/tour-packages.route";
+import { getAuth } from './config/auth.js';
+import { destinationsRouter } from './routes/destinations.route.js';
+import { reviewsRouter } from './routes/reviews.route.js';
+import { tripsRouter } from './routes/trips.route.js';
+import { categoriesRouter } from './routes/travel-categories.route.js';
+import { bookmarksRouter } from './routes/bookmarks.route.js';
+import { usersRouter } from './routes/users.route.js';
+import { statsRouter } from './routes/stats.route.js';
+import { expensesRouter } from './routes/expenses.route.js';
+import { storiesRouter } from './routes/stories.route.js';
+import { settingsRouter } from './routes/settings.route.js';
+import { hotelsRouter } from './routes/hotels.route.js';
+import { foodRouter } from './routes/food.route.js';
+import { notificationsRouter } from './routes/notifications.route.js';
+import { supportRouter } from './routes/support.route.js';
+import { userRouter } from './routes/user.route.js';
+import { tourBookingRouter } from './routes/tour-booking.route.js';
+import { getFeaturedReviews } from './controllers/reviews.controller.js';
+import { tourPackagesRouter } from './routes/tour-packages.route.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -111,7 +111,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
-import { dashboardRouter } from "./routes/dashboard.route";
+import { dashboardRouter } from './routes/dashboard.route.js';
 
 // Mount routers
 

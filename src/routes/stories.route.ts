@@ -6,7 +6,7 @@ import {
   createStory,
   updateStoryStatus,
   deleteStory,
-} from "../controllers/stories.controller";
+} from '../controllers/stories.controller.js';
 
 export const storiesRouter = (db: Db) => {
   const router = Router();

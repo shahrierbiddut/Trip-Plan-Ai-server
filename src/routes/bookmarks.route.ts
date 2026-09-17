@@ -4,7 +4,7 @@ import {
   getUserBookmarks,
   createBookmark,
   deleteBookmark,
-} from "../controllers/bookmarks.controller";
+} from '../controllers/bookmarks.controller.js';
 
 export const bookmarksRouter = (db: Db) => {
   const router = Router();

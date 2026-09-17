@@ -7,7 +7,7 @@ import {
   markAllAsRead, 
   deleteNotification, 
   createTestNotification 
-} from "../controllers/notifications.controller";
+} from '../controllers/notifications.controller.js';
 
 export const notificationsRouter = (db: Db) => {
   const router = express.Router();

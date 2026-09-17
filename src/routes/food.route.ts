@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { Db } from "mongodb";
-import { getFood, getFoodBySlug } from "../controllers/food.controller";
+import { getFood, getFoodBySlug } from '../controllers/food.controller.js';
 
 export const foodRouter = (db: Db) => {
   const router = Router();

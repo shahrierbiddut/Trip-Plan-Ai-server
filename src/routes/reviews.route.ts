@@ -7,7 +7,7 @@ import {
   createReview,
   updateReviewStatus,
   deleteReview,
-} from "../controllers/reviews.controller";
+} from '../controllers/reviews.controller.js';
 
 export const reviewsRouter = (db: Db) => {
   const router = Router();

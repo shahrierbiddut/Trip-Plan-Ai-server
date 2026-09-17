@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Db } from "mongodb";
-import { foodDestinations, restaurantSpotlights } from "../data/food";
+import { foodDestinations, restaurantSpotlights } from '../data/food.js';
 
 export const getFood = (db: Db) => async (req: Request, res: Response) => {
   try {

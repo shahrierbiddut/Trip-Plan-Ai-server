@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { Db } from "mongodb";
-import { getSettings, updateSettings } from "../controllers/settings.controller";
+import { getSettings, updateSettings } from '../controllers/settings.controller.js';
 
 export const settingsRouter = (db: Db) => {
   const router = Router();

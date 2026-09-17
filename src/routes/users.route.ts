@@ -8,7 +8,7 @@ import {
   updateUserRole,
   updateUserStatus,
   deleteUser,
-} from "../controllers/users.controller";
+} from '../controllers/users.controller.js';
 
 export const usersRouter = (db: Db) => {
   const router = Router();

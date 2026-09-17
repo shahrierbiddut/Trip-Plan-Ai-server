@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { Db } from "mongodb";
-import { getHotels, getHotelBySlug } from "../controllers/hotels.controller";
+import { getHotels, getHotelBySlug } from '../controllers/hotels.controller.js';
 
 export const hotelsRouter = (db: Db) => {
   const router = Router();

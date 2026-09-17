@@ -3,7 +3,7 @@ import { Db } from "mongodb";
 import {
   getDashboardStats,
   getAnalyticsStats,
-} from "../controllers/stats.controller";
+} from '../controllers/stats.controller.js';
 
 export const statsRouter = (db: Db) => {
   const router = Router();

@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import sendEmail from "../utils/sendEmail";
+import sendEmail from '../utils/sendEmail.js';
 
 let authInstance: any = null;
 

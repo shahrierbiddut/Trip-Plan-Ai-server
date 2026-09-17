@@ -5,7 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 import multer from "multer";
 import { rateLimit } from "express-rate-limit";
-import { getAuth } from "../config/auth";
+import { getAuth } from '../config/auth.js';
 
 const date = z
   .string()

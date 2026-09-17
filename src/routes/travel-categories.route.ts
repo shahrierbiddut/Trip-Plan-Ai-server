@@ -5,7 +5,7 @@ import {
   createTravelCategory,
   updateTravelCategory,
   deleteTravelCategory,
-} from "../controllers/travel-categories.controller";
+} from '../controllers/travel-categories.controller.js';
 
 export const categoriesRouter = (db: Db) => {
   const router = Router();

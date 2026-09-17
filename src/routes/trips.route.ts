@@ -7,7 +7,7 @@ import {
   createTrip,
   updateTrip,
   deleteTrip,
-} from "../controllers/trips.controller";
+} from '../controllers/trips.controller.js';
 
 export const tripsRouter = (db: Db) => {
   const router = Router();
