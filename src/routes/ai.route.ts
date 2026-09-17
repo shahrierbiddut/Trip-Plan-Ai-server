@@ -348,7 +348,7 @@ export const aiRouter = (db: Db) => {
         return;
       }
 
-      const { fromNodeHeaders } = await Function('return import("better-auth/node")')();
+      const { fromNodeHeaders } = await import("better-auth/node");
       const auth = await getAuth();
       const session = await auth.api.getSession({
         headers: fromNodeHeaders(req.headers),

@@ -44,7 +44,7 @@ app.use((req, _res, next) => {
 
 app.all("/api/auth/*path", async (req, res, next) => {
   try {
-    const { toNodeHandler } = await Function('return import("better-auth/node")')();
+    const { toNodeHandler } = await import("better-auth/node");
     const auth = await getAuth();
     await toNodeHandler(auth)(req, res);
   } catch (error) {

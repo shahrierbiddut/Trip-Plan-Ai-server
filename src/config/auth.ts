@@ -6,8 +6,8 @@ let authInstance: any = null;
 export const getAuth = async () => {
   if (authInstance) return authInstance;
 
-  const { betterAuth } = await Function('return import("better-auth")')();
-  const { mongodbAdapter } = await Function('return import("@better-auth/mongo-adapter")')();
+  const { betterAuth } = await import("better-auth");
+  const { mongodbAdapter } = await import("@better-auth/mongo-adapter");
   const client = new MongoClient(process.env.MONGODB_URI as string);
   const db = client.db(process.env.DB_NAME as string);
   const trustedOrigins = process.env.BETTER_AUTH_TRUSTED_ORIGINS?.split(",")

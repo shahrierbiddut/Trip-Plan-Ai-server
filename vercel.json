@@ -3,13 +3,7 @@
   "builds": [
     {
       "src": "src/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "node_modules/better-auth/**",
-          "node_modules/@better-auth/**"
-        ]
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
