@@ -1,12 +1,11 @@
 import "dotenv/config";
 import { Router, type Request, type Response } from "express";
 import type { Db } from "mongodb";
-import { fromNodeHeaders } from "better-auth/node";
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 import multer from "multer";
 import { rateLimit } from "express-rate-limit";
-import { auth } from "../config/auth";
+import { getAuth } from "../config/auth";
 
 const date = z
   .string()
@@ -349,6 +348,8 @@ export const aiRouter = (db: Db) => {
         return;
       }
 
+      const { fromNodeHeaders } = await Function('return import("better-auth/node")')();
+      const auth = await getAuth();
       const session = await auth.api.getSession({
         headers: fromNodeHeaders(req.headers),
       });

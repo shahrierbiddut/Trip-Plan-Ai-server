@@ -3,8 +3,7 @@ import { aiRouter } from "./routes/ai.route";
 import express, { NextFunction, Request, Response } from "express";
 import { MongoClient, Db } from "mongodb";
 import cors from "cors";
-import { toNodeHandler } from "better-auth/node";
-import { auth } from "./config/auth";
+import { getAuth } from "./config/auth";
 import { destinationsRouter } from "./routes/destinations.route";
 import { reviewsRouter } from "./routes/reviews.route";
 import { tripsRouter } from "./routes/trips.route";
@@ -22,6 +21,7 @@ import { supportRouter } from "./routes/support.route";
 import { userRouter } from "./routes/user.route";
 import { tourBookingRouter } from "./routes/tour-booking.route";
 import { getFeaturedReviews } from "./controllers/reviews.controller";
+import { tourPackagesRouter } from "./routes/tour-packages.route";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -42,11 +42,11 @@ app.use((req, _res, next) => {
   next();
 });
 
-const authHandler = toNodeHandler(auth);
-
 app.all("/api/auth/*path", async (req, res, next) => {
   try {
-    await authHandler(req, res);
+    const { toNodeHandler } = await Function('return import("better-auth/node")')();
+    const auth = await getAuth();
+    await toNodeHandler(auth)(req, res);
   } catch (error) {
     console.error("[Better Auth Error]", error);
     next(error);
@@ -78,6 +78,39 @@ app.get("/api/ck", (_req: Request, res: Response) => {
   res.json({ status: "ok", db: db ? "chandan connected" : "chandan disconnected" });
 });
 
+let dbPromise: Promise<Db> | null = null;
+
+async function getDb(): Promise<Db> {
+  if (db) return db;
+  if (!dbPromise) {
+    const client = new MongoClient(MONGODB_URI);
+    dbPromise = client.connect().then(() => {
+      console.log("MongoDB connected");
+      db = client.db(DB_NAME);
+      // Mount AI router dynamically once DB is connected
+      app.use("/api/ai", aiRouter(db));
+      return db;
+    }).catch(err => {
+      console.error("Failed to connect to MongoDB:", err);
+      dbPromise = null;
+      throw err;
+    });
+  }
+  return dbPromise;
+}
+
+// Global middleware to ensure DB is connected before processing API requests
+app.use(async (req, res, next) => {
+  if (req.path.startsWith("/api/")) {
+    try {
+      await getDb();
+    } catch (err) {
+      return next(err);
+    }
+  }
+  next();
+});
+
 import { dashboardRouter } from "./routes/dashboard.route";
 
 // Mount routers
@@ -102,22 +135,15 @@ app.use("/api/notifications", (req, res, next) => notificationsRouter(db)(req, r
 app.use("/api/support", (req, res, next) => supportRouter(db)(req, res, next));
 app.use("/api/user", (req, res, next) => userRouter(db)(req, res, next));
 app.use("/api/tour-bookings", (req, res, next) => tourBookingRouter(db)(req, res, next));
+app.use("/api/tour-packages", (req, res, next) => tourPackagesRouter(db)(req, res, next));
 
-async function start() {
-  try {
-    const client = new MongoClient(MONGODB_URI);
-    await client.connect();
-    db = client.db(DB_NAME);
-    console.log("MongoDB connected");
-    app.use("/api/ai", aiRouter(db));
+// Original routers are already mounted with the lazy db reference.
+// The middleware above guarantees db is populated before they execute.
 
-    app.listen(PORT as number, "0.0.0.0", () => {
-      console.log(`Server running on http://0.0.0.0:${PORT}`);
-    });
-  } catch (err) {
-    console.error("Failed to start server:", err);
-    process.exit(1);
-  }
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT as number, "0.0.0.0", () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
+  });
 }
 
-start();
+export default app;
