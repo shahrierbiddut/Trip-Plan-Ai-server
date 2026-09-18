@@ -13,7 +13,7 @@ import { Request, Response } from "express"; import { Db, ObjectId } from "mongo
    // Mongo ObjectId 
    if (ObjectId.isValid(id))
      { 
-      result = await db.collection("notifications").updateOne( { _id: new ObjectId(id),
+      result = await db.collection("notifications").updateOne( { _id: new ObjectId(id as string),
 
        }, 
        { $set: { isRead: true, },
@@ -30,7 +30,7 @@ import { Request, Response } from "express"; import { Db, ObjectId } from "mongo
           let result; 
           if (ObjectId.isValid(id))
              { 
-              result = await db.collection("notifications").deleteOne({ _id: new ObjectId(id), });
+              result = await db.collection("notifications").deleteOne({ _id: new ObjectId(id as string), });
          } 
 
          if (!result || result.deletedCount === 0) 
