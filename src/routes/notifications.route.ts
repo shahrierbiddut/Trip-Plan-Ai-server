@@ -6,6 +6,7 @@ import {
   markAsRead, 
   markAllAsRead, 
   deleteNotification, 
+  deleteAllNotifications,
   createTestNotification 
 } from '../controllers/notifications.controller.js';
 
@@ -14,6 +15,9 @@ export const notificationsRouter = (db: Db) => {
 
   router.get("/:userId", getUserNotifications(db));
   router.get("/:userId/unread", getUnreadCount(db));
+  
+  router.delete( "/user/:userId", deleteAllNotifications(db) );
+
   router.patch("/:id/read", markAsRead(db));
   router.patch("/user/:userId/read-all", markAllAsRead(db));
   router.delete("/:id", deleteNotification(db));
