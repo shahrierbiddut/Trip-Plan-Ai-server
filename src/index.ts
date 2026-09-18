@@ -23,6 +23,7 @@ import { tourBookingRouter } from './routes/tour-booking.route.js';
 import { getFeaturedReviews } from './controllers/reviews.controller.js';
 import { tourPackagesRouter } from './routes/tour-packages.route.js';
 import { travelGuidesRouter } from './routes/travel-guides.route.js';
+import { travelChatRouter } from './routes/travel-chat.route.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -66,6 +67,9 @@ app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
     message: "The authentication service could not complete the request.",
   });
 });
+
+// Public travel assistant. It does not need a database connection.
+app.use("/api/chat", travelChatRouter);
 
 let db: Db;
 
