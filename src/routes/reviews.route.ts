@@ -3,6 +3,7 @@ import { Db } from "mongodb";
 import multer from "multer";
 import {
   getReviews,
+  getAdminReviews,
   getMyReviews,
   getReviewInsights,
   getReviewStats,
@@ -63,6 +64,7 @@ const uploadReviewImages = (req: Request, res: Response, next: NextFunction) => 
 export const reviewsRouter = (db: Db) => {
   const router = Router();
 
+  router.get("/admin", getAdminReviews(db));
   router.get("/", getReviews(db));
   router.get("/my", getMyReviews(db));
   router.get("/insights", getReviewInsights(db));

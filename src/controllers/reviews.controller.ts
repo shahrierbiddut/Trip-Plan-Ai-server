@@ -52,6 +52,7 @@ type ReviewDocument = {
 const approvedReviewQuery = {
   $or: [
     { status: { $regex: /^approved$/i } },
+    { status: { $regex: /^published$/i } },
     { status: { $exists: false } },
   ],
 };
@@ -169,6 +170,25 @@ export const getReviews = (db: Db) => async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Failed to fetch reviews:", error);
     res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+export const getAdminReviews = (db: Db) => async (_req: Request, res: Response) => {
+  try {
+    const reviews = await db
+      .collection("reviews")
+      .find()
+      .sort({ createdAt: -1, _id: -1 })
+      .toArray();
+
+    res.status(200).json({
+      success: true,
+      message: "Admin reviews fetched successfully",
+      data: reviews,
+    });
+  } catch (error) {
+    console.error("Failed to fetch admin reviews:", error);
+    res.status(500).json({ success: false, message: "Server Error", data: [] });
   }
 };
 
