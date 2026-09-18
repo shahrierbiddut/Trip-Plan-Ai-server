@@ -5,6 +5,13 @@ export const getDashboardData = (db: Db) => async (req: Request, res: Response) 
   try {
     const { userId } = req.query;
 
+    const [totalUsers, totalTrips, totalDestinations, totalReviews] = await Promise.all([
+      db.collection("user").countDocuments(),
+      db.collection("trips").countDocuments(),
+      db.collection("destinations").countDocuments(),
+      db.collection("reviews").countDocuments(),
+    ]);
+
     let dbTrips = [];
     if (userId) {
       dbTrips = await db.collection("trips").find({ userId }).sort({ createdAt: -1 }).toArray();
@@ -100,6 +107,10 @@ export const getDashboardData = (db: Db) => async (req: Request, res: Response) 
       });
     }
     const dashboardData = {
+      totalUsers,
+      totalTrips,
+      totalDestinations,
+      totalReviews,
       user: {
         name: "Rifat Ahmed",
         firstName: "Rifat",

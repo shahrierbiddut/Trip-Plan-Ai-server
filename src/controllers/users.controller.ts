@@ -25,7 +25,7 @@ export const getUserById = (db: Db) => async (req: Request, res: Response) => {
     if (!user) {
       // Fallback to ObjectId just in case
       try {
-        user = await db.collection<any>("user").findOne({ _id: new ObjectId(id as string) });
+        user = await db.collection<any>("user").findOne({ _id: new ObjectId(id) });
       } catch {
         // invalid object id, ignore
       }
@@ -180,7 +180,7 @@ export const updateUserProfile = (db: Db) => async (
     // If not found, try MongoDB ObjectId
     if (!result && ObjectId.isValid(id)) {
       result = await db.collection<any>("user").findOneAndUpdate(
-        { _id: new ObjectId(id as string) },
+        { _id: new ObjectId(id) },
         { $set: updateData },
         { returnDocument: "after" }
       );
@@ -215,6 +215,14 @@ export const updateUserRole = (db: Db) => async (
   try {
     const id = String(req.params.id);
     const { role } = req.body;
+    const allowedRoles = ["admin", "Registered User"];
+
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Role must be admin or Registered User",
+      });
+    }
 
     let result = await db.collection<any>("user").updateOne(
       { _id: id },
@@ -223,7 +231,7 @@ export const updateUserRole = (db: Db) => async (
 
     if (result.matchedCount === 0 && ObjectId.isValid(id)) {
       result = await db.collection("user").updateOne(
-        { _id: new ObjectId(id as string) },
+        { _id: new ObjectId(id) },
         { $set: { role, updatedAt: new Date() } }
       );
     }
@@ -270,7 +278,7 @@ export const updateUserStatus = (db: Db) => async (
 
     if (result.matchedCount === 0 && ObjectId.isValid(id)) {
       result = await db.collection("user").updateOne(
-        { _id: new ObjectId(id as string) },
+        { _id: new ObjectId(id) },
         {
           $set: {
             status,
@@ -314,7 +322,7 @@ export const deleteUser = (db: Db) => async (
 
     if (result.deletedCount === 0 && ObjectId.isValid(id)) {
       result = await db.collection("user").deleteOne({
-        _id: new ObjectId(id as string),
+        _id: new ObjectId(id),
       });
     }
 
