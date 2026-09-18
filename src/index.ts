@@ -30,12 +30,26 @@ const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI as string;
 const DB_NAME = process.env.DB_NAME as string;
 
-app.use(cors({
-  origin: function (origin, callback) {
-    callback(null, true); // Allow any origin in development
-  },
-  credentials: true
-}));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://tripplan-ai-delta.vercel.app",
+  "https://trip-plan-ai-admin.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
