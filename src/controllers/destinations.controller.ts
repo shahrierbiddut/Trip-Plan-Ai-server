@@ -133,7 +133,7 @@ export const updateDestination =
         .collection("destinations")
         .updateOne(
           {
-            _id: new ObjectId(id),
+            _id: new ObjectId(id as string),
           },
           {
             $set: {
@@ -154,7 +154,7 @@ export const updateDestination =
         await db
           .collection("destinations")
           .findOne({
-            _id: new ObjectId(id),
+            _id: new ObjectId(id as string),
           });
 
       return res.status(200).json({
@@ -189,7 +189,7 @@ export const deleteDestination =
       const result = await db
         .collection("destinations")
         .deleteOne({
-          _id: new ObjectId(id),
+          _id: new ObjectId(id as string),
         });
 
       if (result.deletedCount === 0) {

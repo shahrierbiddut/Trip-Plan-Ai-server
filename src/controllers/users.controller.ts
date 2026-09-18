@@ -25,7 +25,7 @@ export const getUserById = (db: Db) => async (req: Request, res: Response) => {
     if (!user) {
       // Fallback to ObjectId just in case
       try {
-        user = await db.collection<any>("user").findOne({ _id: new ObjectId(id) });
+        user = await db.collection<any>("user").findOne({ _id: new ObjectId(id as string) });
       } catch {
         // invalid object id, ignore
       }
@@ -180,7 +180,7 @@ export const updateUserProfile = (db: Db) => async (
     // If not found, try MongoDB ObjectId
     if (!result && ObjectId.isValid(id)) {
       result = await db.collection<any>("user").findOneAndUpdate(
-        { _id: new ObjectId(id) },
+        { _id: new ObjectId(id as string) },
         { $set: updateData },
         { returnDocument: "after" }
       );
@@ -223,7 +223,7 @@ export const updateUserRole = (db: Db) => async (
 
     if (result.matchedCount === 0 && ObjectId.isValid(id)) {
       result = await db.collection("user").updateOne(
-        { _id: new ObjectId(id) },
+        { _id: new ObjectId(id as string) },
         { $set: { role, updatedAt: new Date() } }
       );
     }
@@ -270,7 +270,7 @@ export const updateUserStatus = (db: Db) => async (
 
     if (result.matchedCount === 0 && ObjectId.isValid(id)) {
       result = await db.collection("user").updateOne(
-        { _id: new ObjectId(id) },
+        { _id: new ObjectId(id as string) },
         {
           $set: {
             status,
@@ -314,7 +314,7 @@ export const deleteUser = (db: Db) => async (
 
     if (result.deletedCount === 0 && ObjectId.isValid(id)) {
       result = await db.collection("user").deleteOne({
-        _id: new ObjectId(id),
+        _id: new ObjectId(id as string),
       });
     }
 

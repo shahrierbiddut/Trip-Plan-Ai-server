@@ -1,4 +1,3 @@
-import type { FoodDestination, RestaurantSpotlight } from "@/types/food";
 
 export const foodDestinations = [
   {

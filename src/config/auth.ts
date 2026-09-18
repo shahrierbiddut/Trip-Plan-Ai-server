@@ -20,9 +20,6 @@ export const getAuth = async () => {
     trustedOrigins,
     advanced: {
       cookiePrefix: "my_app_v2",
-      crossSubDomainCookies: {
-        enabled: true,
-      }
     },
     emailAndPassword: {
       enabled: true,

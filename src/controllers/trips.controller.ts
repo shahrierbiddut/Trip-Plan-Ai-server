@@ -20,7 +20,7 @@ export const getTripById = (db: Db) => async (req: Request, res: Response) => {
     const { id } = req.params;
     let query;
     try {
-      query = { _id: new ObjectId(id) };
+      query = { _id: new ObjectId(id as string) };
     } catch (e) {
       query = { localId: id };
     }
@@ -81,7 +81,7 @@ export const updateTrip = (db: Db) => async (req: Request, res: Response) => {
     
     let query;
     try {
-      query = { _id: new ObjectId(id) };
+      query = { _id: new ObjectId(id as string) };
     } catch (e) {
       query = { localId: id };
     }
@@ -108,7 +108,7 @@ export const deleteTrip = (db: Db) => async (req: Request, res: Response) => {
     
     let query;
     try {
-      query = { _id: new ObjectId(id) };
+      query = { _id: new ObjectId(id as string) };
     } catch (e) {
       query = { localId: id };
     }

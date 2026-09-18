@@ -1,4 +1,3 @@
-import type { Destination, Hotel } from "@/types/hotel";
 
 export const formatBdt = (amount: number) =>
   new Intl.NumberFormat("en-BD", {

@@ -34,7 +34,7 @@ export const createBookmark = (db: Db) => async (req: Request, res: Response) =>
 export const deleteBookmark = (db: Db) => async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await db.collection("bookmarks").deleteOne({ _id: new ObjectId(id) });
+    const result = await db.collection("bookmarks").deleteOne({ _id: new ObjectId(id as string) });
     
     if (result.deletedCount === 0) {
       return res.status(404).json({ success: false, message: "Not Found" });

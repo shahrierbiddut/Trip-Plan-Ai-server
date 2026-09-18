@@ -26,7 +26,7 @@ export const createExpense = (db: Db) => async (req: Request, res: Response) => 
 export const deleteExpense = (db: Db) => async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    await db.collection("expenses").deleteOne({ _id: new ObjectId(id) });
+    await db.collection("expenses").deleteOne({ _id: new ObjectId(id as string) });
     res.status(200).json({ success: true, message: "Expense deleted" });
   } catch (error) {
     console.error("Failed to delete expense:", error);

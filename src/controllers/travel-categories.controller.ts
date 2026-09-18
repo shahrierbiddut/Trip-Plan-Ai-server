@@ -37,7 +37,7 @@ export const updateTravelCategory = (db: Db) => async (req: Request, res: Respon
     delete data._id; // prevent updating _id
     
     const result = await db.collection("TravelCategories").updateOne(
-      { _id: new ObjectId(id) },
+      { _id: new ObjectId(id as string) },
       { $set: data }
     );
     
@@ -55,7 +55,7 @@ export const updateTravelCategory = (db: Db) => async (req: Request, res: Respon
 export const deleteTravelCategory = (db: Db) => async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await db.collection("TravelCategories").deleteOne({ _id: new ObjectId(id) });
+    const result = await db.collection("TravelCategories").deleteOne({ _id: new ObjectId(id as string) });
     
     if (result.deletedCount === 0) {
       return res.status(404).json({ success: false, message: "Not Found" });

@@ -41,7 +41,7 @@ export const markAsRead = (db: Db) => async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     let result = await db.collection("notifications").updateOne(
-      { _id: new ObjectId(id) },
+      { _id: new ObjectId(id as string) },
       { $set: { isRead: true } }
     );
     
@@ -83,7 +83,7 @@ export const markAllAsRead = (db: Db) => async (req: Request, res: Response) => 
 export const deleteNotification = (db: Db) => async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    let result = await db.collection("notifications").deleteOne({ _id: new ObjectId(id) });
+    let result = await db.collection("notifications").deleteOne({ _id: new ObjectId(id as string) });
     
     if (result.deletedCount === 0) {
       result = await db.collection("notifications").deleteOne({ _id: id as any });

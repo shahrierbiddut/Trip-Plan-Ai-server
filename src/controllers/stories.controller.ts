@@ -152,7 +152,7 @@ export const updateStoryStatus = (db: Db) => async (req: Request, res: Response)
     const { id } = req.params;
     const { status } = req.body;
     const result = await db.collection("stories").updateOne(
-      { _id: new ObjectId(id) },
+      { _id: new ObjectId(id as string) },
       { $set: { status, updatedAt: new Date() } }
     );
     if (result.matchedCount === 0) {
@@ -169,7 +169,7 @@ export const updateStoryStatus = (db: Db) => async (req: Request, res: Response)
 export const deleteStory = (db: Db) => async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    await db.collection("stories").deleteOne({ _id: new ObjectId(id) });
+    await db.collection("stories").deleteOne({ _id: new ObjectId(id as string) });
     res.status(200).json({ success: true, message: "Story deleted" });
   } catch (error) {
     console.error("Failed to delete story:", error);
