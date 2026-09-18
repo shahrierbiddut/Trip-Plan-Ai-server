@@ -9,7 +9,7 @@ export const getTourPackages = (db: Db) => async (req: Request, res: Response) =
     if (featured === 'true') query.featured = true;
     if (upcoming === 'true') query.upcoming = true;
 
-    const packages = await db.collection("tour_packages").find(query).sort({ sortOrder: 1 }).toArray();
+    const packages = await db.collection("tour-packages").find(query).sort({ sortOrder: 1 }).toArray();
     
     res.json({ success: true, data: packages });
   } catch (error) {
@@ -21,7 +21,7 @@ export const getTourPackages = (db: Db) => async (req: Request, res: Response) =
 export const getTourPackageBySlug = (db: Db) => async (req: Request, res: Response) => {
   try {
     const { slug } = req.params;
-    const tourPackage = await db.collection("tour_packages").findOne({ slug, active: true });
+    const tourPackage = await db.collection("tour-packages").findOne({ slug, active: true });
     
     if (!tourPackage) {
       res.status(404).json({ success: false, message: "Tour package not found" });
