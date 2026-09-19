@@ -33,8 +33,8 @@ const DB_NAME = process.env.DB_NAME as string;
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
-  "https://tripplan-ai-delta.vercel.app",
-  "https://trip-plan-ai-admin.vercel.app",
+  "https://trip-plan-client.vercel.app",
+  "https://trip-plan-admin.vercel.app",
 ];
 
 app.use(
