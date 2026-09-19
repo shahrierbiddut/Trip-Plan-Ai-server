@@ -10,13 +10,23 @@ export const getAuth = async () => {
   const { mongodbAdapter } = await import("@better-auth/mongo-adapter");
   const client = new MongoClient(process.env.MONGODB_URI as string);
   const db = client.db(process.env.DB_NAME as string);
+  const defaultOrigins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://trip-plan-client.vercel.app",
+    "https://trip-plan-admin.vercel.app",
+  ];
+
   const trustedOrigins = process.env.BETTER_AUTH_TRUSTED_ORIGINS?.split(",")
     .map((origin) => origin.trim())
-    .filter(Boolean) ?? ["http://localhost:3000", "http://localhost:3001"];
+    .filter(Boolean) ?? defaultOrigins;
+
+  const baseURL = process.env.BETTER_AUTH_URL ?? 
+    (process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/api/auth` : "http://localhost:5000/api/auth");
 
   authInstance = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
-    baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:5000/api/auth",
+    baseURL,
     trustedOrigins,
     advanced: {
       cookiePrefix: "my_app_v2",
