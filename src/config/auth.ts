@@ -64,6 +64,12 @@ export const getAuth = async () => {
         },
       },
     },
+    account: {
+      accountLinking: {
+        enabled: true,
+        trustedProviders: ["google"]
+      }
+    }
   });
 
   return authInstance;
