@@ -21,8 +21,9 @@ export const getAuth = async () => {
     .map((origin) => origin.trim())
     .filter(Boolean) ?? defaultOrigins;
 
-  const baseURL = process.env.BETTER_AUTH_URL ?? 
-    (process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/api/auth` : "http://localhost:5000/api/auth");
+  const baseURL = process.env.NODE_ENV === "production" 
+    ? "https://trip-plan-server.vercel.app/api/auth" 
+    : "http://localhost:5000/api/auth";
 
   authInstance = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
