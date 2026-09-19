@@ -40,7 +40,7 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_CHAT_MODEL?.trim() || "gemini-2.5-flash";
+    const model = process.env.GEMINI_CHAT_MODEL?.trim() || "gemini-1.5-flash";
 
     const conversation = body.messages
       .map(
@@ -135,6 +135,50 @@ Rules:
     res.status(502).json({
       error: "AI উত্তর দিতে পারেনি। একটু পরে আবার চেষ্টা করুন।",
     });
+  }
+});
+
+router.post("/translate", async (req: Request, res: Response) => {
+  try {
+    const { text, targetLang = "Bengali" } = req.body;
+    if (!text) {
+      res.status(400).json({ error: "Text is required" });
+      return;
+    }
+    
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+    const response = await ai.models.generateContent({
+      model: "gemini-1.5-flash",
+      contents: `Translate the following text to ${targetLang}. Only return the translated text without any explanation: "${text}"`,
+    });
+    
+    res.json({ translatedText: response.text?.trim() });
+  } catch (error) {
+    console.error("Translation failed:", error);
+    res.status(500).json({ error: "Translation failed" });
+  }
+});
+
+router.post("/predict-price", async (req: Request, res: Response) => {
+  try {
+    const { destination, title, price } = req.body;
+    if (!destination) {
+      res.status(400).json({ success: false, message: "Destination is required" });
+      return;
+    }
+
+    const prompt = `Analyze the best time to visit "${destination}" (Package: ${title || 'Unknown'}, Price: ${price || 'Unknown'}). Provide a short 2-3 sentence prediction in Bengali about when the price might drop or when it's best to book based on off-seasons or historical travel data.`;
+
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+    const response = await ai.models.generateContent({
+      model: "gemini-1.5-flash",
+      contents: prompt,
+    });
+
+    res.json({ success: true, prediction: response.text });
+  } catch (error) {
+    console.error("Price prediction failed:", error);
+    res.status(500).json({ success: false, message: "Failed to predict price" });
   }
 });
 

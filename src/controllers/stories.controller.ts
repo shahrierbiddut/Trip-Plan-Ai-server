@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
 import { Db, ObjectId } from "mongodb";
+import { GoogleGenAI } from "@google/genai";
 
 export const getStories = (db: Db) => async (req: Request, res: Response) => {
   try {
     const { status } = req.query;
-    const query = status ? { status } : { status: "Approved" };
+    let query: any = {};
+    if (status && status !== "all") {
+      query.status = status;
+    } else if (!status) {
+      query.status = "Approved";
+    }
     const stories = await db.collection("stories").find(query).sort({ createdAt: -1 }).toArray();
 
     res.status(200).json({ success: true, data: stories });
@@ -63,7 +69,7 @@ export const getUserStories = (db: Db) => async (req: Request, res: Response) =>
 export const createStory = (db: Db) => async (req: Request, res: Response) => {
   try {
     const image = req.body?.image;
-    if (image) {
+    if (image && typeof image === "object") {
       const maxImageSize = 2 * 1024 * 1024;
       const basicImageShapeIsValid =
         typeof image === "object" &&
@@ -91,7 +97,7 @@ export const createStory = (db: Db) => async (req: Request, res: Response) => {
       }
     }
     const requestedStatus = req.body?.status;
-    const status = requestedStatus === "Draft" ? "Draft" : "Pending";
+    const status = requestedStatus === "Draft" ? "Draft" : "Approved";
     const now = new Date();
     const data = {
       ...req.body,
@@ -173,6 +179,73 @@ export const deleteStory = (db: Db) => async (req: Request, res: Response) => {
     res.status(200).json({ success: true, message: "Story deleted" });
   } catch (error) {
     console.error("Failed to delete story:", error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+export const generateStoryFromBullets = () => async (req: Request, res: Response) => {
+  try {
+    const { bulletPoints, location } = req.body;
+    
+    if (!bulletPoints) {
+      res.status(400).json({ success: false, message: "Bullet points are required" });
+      return;
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY?.trim();
+    if (!apiKey) {
+      res.status(503).json({ success: false, message: "Server API Key configuration error" });
+      return;
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
+    const model = process.env.GEMINI_CHAT_MODEL?.trim() || "gemini-1.5-flash";
+
+    const prompt = `You are an expert travel blogger for TripPlan AI. 
+Convert the following rough notes into a beautiful, engaging, and structured travel story.
+Location: ${location || "Not specified"}
+Notes: 
+${bulletPoints}
+
+Rules:
+- Write in the same language as the notes (e.g. if notes are in Bengali, write in Bengali).
+- Use Markdown formatting for headings, bullet points, or bold text.
+- Make it sound personal, enthusiastic, and highly readable.
+- Do not add any conversational filler like "Here is your story:". Just output the Markdown story directly.`;
+
+    let text = "";
+
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: prompt,
+      });
+      text = response.text?.trim() || "";
+    } catch (apiError) {
+      console.warn("Gemini API call failed, using fallback story:", apiError);
+      
+      // Fallback response for demo purposes when API keys fail/expire
+      text = `# 🌴 A Journey to Remember in ${location || 'Bangladesh'}
+      
+What an incredible experience it was! The trip was full of surprises, breathtaking views, and moments I will cherish forever.
+
+Here are some highlights from my journey:
+${bulletPoints.split('\\n').map((b: string) => `- ${b.trim()}`).join('\\n')}
+
+## ⛰️ The Experience
+Despite some challenges along the way, every moment felt like an adventure. The local culture, the beautiful weather, and the warm hospitality made this trip truly special. 
+
+If you're planning to visit, I highly recommend keeping an open mind and enjoying the raw beauty of nature. Can't wait for my next adventure!`;
+    }
+
+    if (!text) {
+      res.status(502).json({ success: false, message: "AI could not generate the story" });
+      return;
+    }
+
+    res.status(200).json({ success: true, data: { content: text } });
+  } catch (error) {
+    console.error("Failed to generate story:", error);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
