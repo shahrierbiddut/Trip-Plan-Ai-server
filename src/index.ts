@@ -88,7 +88,11 @@ app.use("/api/chat", travelChatRouter);
 let db: Db;
 
 app.get("/", (_req: Request, res: Response) => {
-  res.json('foo, bar! updated V2');
+  res.json({
+    message: "Trip Plan AI Server is running successfully! 🚀",
+    status: "Online",
+    version: "1.0.0",
+  });
 });
 app.get("/api/health", (_req: Request, res: Response) => {
   res.json({ status: "ok", db: db ? "connected" : "disconnected" });
