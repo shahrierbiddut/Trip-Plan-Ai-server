@@ -26,6 +26,7 @@ import { travelGuidesRouter } from './routes/travel-guides.route.js';
 import { travelChatRouter } from './routes/travel-chat.route.js';
 
 const app = express();
+app.set("trust proxy", 1);
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI as string;
 const DB_NAME = process.env.DB_NAME as string;
