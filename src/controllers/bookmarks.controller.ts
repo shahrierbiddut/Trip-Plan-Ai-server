@@ -18,12 +18,25 @@ export const getUserBookmarks = (db: Db) => async (req: Request, res: Response) 
 
 export const createBookmark = (db: Db) => async (req: Request, res: Response) => {
   try {
-    const data = req.body;
-    const result = await db.collection("bookmarks").insertOne(data);
+    const { userId, destinationSlug, destinationData } = req.body;
+    if (typeof userId !== "string" || !userId.trim() ||
+        typeof destinationSlug !== "string" || !destinationSlug.trim() ||
+        !destinationData || typeof destinationData !== "object" || Array.isArray(destinationData)) {
+      return res.status(400).json({ success: false, message: "Invalid bookmark data" });
+    }
+
+    // Repeated clicks or retries should not create duplicate saved destinations.
+    const collection = db.collection("bookmarks");
+    await collection.updateOne(
+      { userId, destinationSlug },
+      { $setOnInsert: { userId, destinationSlug, destinationData, createdAt: new Date() } },
+      { upsert: true },
+    );
+    const bookmark = await collection.findOne({ userId, destinationSlug });
     res.status(201).json({
       success: true,
       message: "Bookmark saved",
-      data: { _id: result.insertedId, ...data },
+      data: bookmark,
     });
   } catch (error) {
     console.error("Failed to save bookmark:", error);
